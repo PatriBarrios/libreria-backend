@@ -38,7 +38,7 @@ export class RoleService {
       throw new NotFoundException('Role not found');
     }
 
-    return role;
+    return 'Updated';
   }
 
   async remove(id: number) {

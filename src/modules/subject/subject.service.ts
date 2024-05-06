@@ -39,7 +39,7 @@ export class SubjectService {
       throw new NotFoundException('Subject not found');
     }
 
-    return subject;
+    return 'Updated';
   }
 
   async remove(id: number) {

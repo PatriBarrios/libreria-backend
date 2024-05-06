@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Book } from '../../book/entities/book.entity';
 
 @Entity()
 export class Author {
@@ -10,4 +11,10 @@ export class Author {
 
   @Column({ name: 'author_last_name', length: 255 })
   lastName: string;
+
+  @ManyToMany(() => Book, (book) => book.authors, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'CASCADE',
+  })
+  books: Book[];
 }

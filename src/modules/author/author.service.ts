@@ -38,7 +38,7 @@ export class AuthorService {
       throw new NotFoundException('Author not found');
     }
 
-    return author;
+    return 'Updated';
   }
 
   async remove(id: number) {
