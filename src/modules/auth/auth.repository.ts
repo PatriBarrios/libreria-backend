@@ -1,5 +1,4 @@
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { SignUpDTO } from './dto/signup.dto';
 import { Role } from '../role/entities/role.entity';
@@ -9,15 +8,8 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthRepository extends Repository<User> {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
-  ) {
-    super(
-      userRepository.target,
-      userRepository.manager,
-      userRepository.queryRunner,
-    );
+  constructor(private dataSource: DataSource) {
+    super(User, dataSource.createEntityManager());
   }
   async signup(signUpDTO: SignUpDTO) {
     const { email, password, name, lastName, dni } = signUpDTO;
@@ -27,7 +19,8 @@ export class AuthRepository extends Repository<User> {
     user.lastName = lastName;
     user.dni = dni;
 
-    const defaultRole = await this.roleRepository.findOne({
+    const roleRepository = await this.dataSource.getRepository(Role);
+    const defaultRole = await roleRepository.findOne({
       where: { name: RoleType.USER },
     });
 

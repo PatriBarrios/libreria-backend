@@ -8,10 +8,11 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { Configuration } from '../../util/enum/configuration.enum';
+import { User } from '../user/entities/user.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuthRepository]),
+    TypeOrmModule.forFeature([User]),
     PassportModule.register({
       defaultStrategy: 'jwt',
     }),
@@ -29,7 +30,7 @@ import { Configuration } from '../../util/enum/configuration.enum';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, ConfigService, JwtStrategy],
+  providers: [AuthService, AuthRepository, ConfigService, JwtStrategy],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
