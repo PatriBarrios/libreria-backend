@@ -4,7 +4,7 @@ import { SignUpDTO } from './dto/signup.dto';
 import { Role } from '../role/entities/role.entity';
 import { RoleType } from '../../util/enum/roletype.enum';
 import { genSalt, hash } from 'bcryptjs';
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthRepository extends Repository<User> {
@@ -19,16 +19,23 @@ export class AuthRepository extends Repository<User> {
     user.lastName = lastName;
     user.dni = dni;
 
-    const roleRepository = await this.dataSource.getRepository(Role);
-    const defaultRole = await roleRepository.findOne({
-      where: { name: RoleType.USER },
-    });
+    try {
+      const roleRepository = await this.dataSource.getRepository(Role);
+      const defaultRole = await roleRepository.findOne({
+        where: { name: RoleType.USER },
+      });
 
-    user.role = defaultRole;
+      user.role = defaultRole;
 
-    const salt = await genSalt(10);
-    user.password = await hash(password, salt);
-
-    await user.save();
+      const salt = await genSalt(10);
+      user.password = await hash(password, salt);
+      await user.save();
+      return user;
+    } catch (error) {
+      if (error.code == 23505) {
+        throw new ConflictException(error.detail);
+      }
+      console.log(error);
+    }
   }
 }

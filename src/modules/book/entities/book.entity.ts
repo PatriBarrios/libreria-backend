@@ -5,10 +5,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Subject } from '../../subject/entities/subject.entity';
 import { Author } from '../../author/entities/author.entity';
+import { BookCopy } from '../../book_copy/entities/book_copy.entity';
 
 @Entity()
 export class Book {
@@ -37,6 +39,7 @@ export class Book {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
     nullable: false,
+    eager: true,
   })
   @JoinColumn({ name: 'subject_id' })
   subject: Subject;
@@ -45,6 +48,7 @@ export class Book {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
     nullable: false,
+    eager: true,
   })
   @JoinTable({
     name: 'book_author',
@@ -52,4 +56,7 @@ export class Book {
     inverseJoinColumn: { name: 'author_id', referencedColumnName: 'id' },
   })
   authors: Author[];
+
+  @OneToMany(() => BookCopy, (bookCopy) => bookCopy.book, { cascade: true })
+  bookCopies: BookCopy[];
 }

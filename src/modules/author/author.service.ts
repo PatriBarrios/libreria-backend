@@ -4,6 +4,7 @@ import { UpdateAuthorDto } from './dto/update-author.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Author } from './entities/author.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../../util/dto/pagination.dto';
 
 @Injectable()
 export class AuthorService {
@@ -17,8 +18,11 @@ export class AuthorService {
     return this.authorRepository.save(role);
   }
 
-  async findAll() {
-    return await this.authorRepository.find();
+  async findAll(paginationDto: PaginationDto) {
+    return await this.authorRepository.find({
+      take: paginationDto.limit || 10,
+      skip: paginationDto.offset || 0,
+    });
   }
 
   async findOne(id: number) {
@@ -32,22 +36,20 @@ export class AuthorService {
   }
 
   async update(id: number, updateAuthorDto: UpdateAuthorDto) {
-    const author = await this.authorRepository.update(id, updateAuthorDto);
+    const author = await this.authorRepository.preload({
+      id,
+      ...updateAuthorDto,
+    });
 
     if (!author) {
       throw new NotFoundException('Author not found');
     }
-
-    return 'Updated';
+    await this.authorRepository.save(author);
+    return author;
   }
 
   async remove(id: number) {
-    const author = await this.authorRepository.findOneBy({ id: id });
-
-    if (!author) {
-      throw new NotFoundException('Author not found');
-    }
-
+    const author = await this.findOne(id);
     this.authorRepository.remove(author);
     return author;
   }

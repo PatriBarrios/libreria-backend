@@ -9,6 +9,6 @@ export class Subject {
   @Column({ name: 'subject_name', unique: true, length: 100 })
   name: string;
 
-  @OneToMany(() => Book, (book) => book.subject)
+  @OneToMany(() => Book, (book) => book.subject, { cascade: true })
   books: Book[];
 }

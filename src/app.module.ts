@@ -7,6 +7,7 @@ import { AuthorModule } from './modules/author/author.module';
 import { UserModule } from './modules/user/user.module';
 import { BookModule } from './modules/book/book.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BookCopyModule } from './modules/book_copy/book_copy.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './modules/auth/auth.module';
     UserModule,
     BookModule,
     AuthModule,
+    BookCopyModule,
   ],
 })
 export class AppModule {

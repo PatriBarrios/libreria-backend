@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Subject } from './entities/subject.entity';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateRoleDto } from '../role/dto/update-role.dto';
+import { PaginationDto } from '../../util/dto/pagination.dto';
 
 @Injectable()
 export class SubjectService {
@@ -18,8 +19,11 @@ export class SubjectService {
     return this.subjectRepository.save(subject);
   }
 
-  async findAll() {
-    return await this.subjectRepository.find();
+  async findAll(paginationDto: PaginationDto) {
+    return await this.subjectRepository.find({
+      take: paginationDto.limit || 10,
+      skip: paginationDto.offset || 0,
+    });
   }
 
   async findOne(id: number) {
@@ -33,22 +37,20 @@ export class SubjectService {
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
-    const subject = await this.subjectRepository.update(id, updateRoleDto);
+    const subject = await this.subjectRepository.preload({
+      id,
+      ...updateRoleDto,
+    });
 
     if (!subject) {
       throw new NotFoundException('Subject not found');
     }
-
-    return 'Updated';
+    await this.subjectRepository.save(subject);
+    return subject;
   }
 
   async remove(id: number) {
-    const subject = await this.subjectRepository.findOneBy({ id: id });
-
-    if (!subject) {
-      throw new NotFoundException('Subject not found');
-    }
-
+    const subject = await this.findOne(id);
     this.subjectRepository.remove(subject);
     return subject;
   }

@@ -1,42 +1,50 @@
 import {
   IsArray,
+  IsInt,
   IsNotEmpty,
-  IsNotEmptyObject,
-  IsNumber,
+  IsPositive,
   IsString,
+  MaxLength,
+  Min,
 } from 'class-validator';
-import { Author } from '../../author/entities/author.entity';
-import { Subject } from '../../subject/entities/subject.entity';
 
 export class CreateBookDto {
   @IsString()
   @IsNotEmpty()
+  @MaxLength(100)
   title: string;
 
-  @IsNumber()
+  @IsInt()
   @IsNotEmpty()
+  @Min(1900)
   yearEdition: number;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(100)
   publisher: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(100)
   country: string;
 
   @IsString()
   @IsNotEmpty()
+  @MaxLength(255)
   summary: string;
 
-  @IsNumber()
-  @IsNotEmpty()
+  @IsInt()
+  @IsPositive()
   numberPages: number;
 
-  @IsNotEmptyObject()
-  subject: Subject;
+  @IsInt()
+  @IsPositive()
+  subject: number;
 
   @IsNotEmpty()
   @IsArray()
-  authors: Author[];
+  @IsInt({ each: true })
+  @IsPositive({ each: true })
+  authors: number[];
 }

@@ -3,13 +3,16 @@ import {
   Get,
   Post,
   Body,
-  Put,
+  Patch,
   Param,
   Delete,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { PaginationDto } from 'src/util/dto/pagination.dto';
 
 @Controller('subject')
 export class SubjectController {
@@ -21,22 +24,25 @@ export class SubjectController {
   }
 
   @Get()
-  findAll() {
-    return this.subjectService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.subjectService.findAll(paginationDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.subjectService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.subjectService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateSubjectDto: UpdateSubjectDto) {
-    return this.subjectService.update(+id, updateSubjectDto);
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSubjectDto: UpdateSubjectDto,
+  ) {
+    return this.subjectService.update(id, updateSubjectDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.subjectService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.subjectService.remove(id);
   }
 }

@@ -13,7 +13,7 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ name: 'user_email', unique: true })
+  @Column({ name: 'user_email', unique: true, length: 100 })
   email: string;
 
   @Column({ name: 'user_password', length: 255 })
@@ -32,6 +32,7 @@ export class User extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
     nullable: false,
+    eager: true,
   })
   @JoinColumn({ name: 'role_id' })
   role: Role;

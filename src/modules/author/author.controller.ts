@@ -3,13 +3,16 @@ import {
   Get,
   Post,
   Body,
-  Put,
+  Patch,
   Param,
   Delete,
+  ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
+import { PaginationDto } from '../../util/dto/pagination.dto';
 
 @Controller('author')
 export class AuthorController {
@@ -21,22 +24,25 @@ export class AuthorController {
   }
 
   @Get()
-  findAll() {
-    return this.authorService.findAll();
+  findAll(@Query() paginationDto: PaginationDto) {
+    return this.authorService.findAll(paginationDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authorService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.authorService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
-    return this.authorService.update(+id, updateAuthorDto);
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAuthorDto: UpdateAuthorDto,
+  ) {
+    return this.authorService.update(id, updateAuthorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authorService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.authorService.remove(id);
   }
 }
