@@ -1,5 +1,12 @@
+import { Loan } from '../../loan/entities/loan.entity';
 import { Book } from '../../book/entities/book.entity';
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class BookCopy {
@@ -14,4 +21,7 @@ export class BookCopy {
   })
   @JoinColumn({ name: 'book_id' })
   book: Book;
+
+  @OneToMany(() => Loan, (loan) => loan.bookCopy, { cascade: true })
+  loans: Loan[];
 }

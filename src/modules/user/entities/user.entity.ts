@@ -1,31 +1,34 @@
-import { Role } from 'src/modules/role/entities/role.entity';
 import {
   BaseEntity,
   Column,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { Loan } from '../../loan/entities/loan.entity';
+import { Role } from '../../role/entities/role.entity';
 
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ name: 'user_email', unique: true, length: 100 })
+  @Column({ unique: true, length: 100 })
   email: string;
 
-  @Column({ name: 'user_password', length: 255 })
+  @Column({ length: 255, select: false })
   password: string;
 
-  @Column({ name: 'user_name', length: 100 })
+  @Column({ length: 100 })
   name: string;
 
-  @Column({ name: 'user_last_name', length: 255 })
+  @Column({ length: 255 })
   lastName: string;
 
-  @Column({ name: 'user_dni', length: 11, unique: true })
+  @Column({ length: 11, unique: true })
   dni: string;
 
   @ManyToOne(() => Role, (role) => role.users, {
@@ -36,4 +39,7 @@ export class User extends BaseEntity {
   })
   @JoinColumn({ name: 'role_id' })
   role: Role;
+
+  @OneToMany(() => Loan, (loan) => loan.user, { cascade: true })
+  loans: Loan[];
 }

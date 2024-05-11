@@ -8,6 +8,7 @@ import { UserModule } from './modules/user/user.module';
 import { BookModule } from './modules/book/book.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BookCopyModule } from './modules/book_copy/book_copy.module';
+import { LoanModule } from './modules/loan/loan.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BookCopyModule } from './modules/book_copy/book_copy.module';
     BookModule,
     AuthModule,
     BookCopyModule,
+    LoanModule,
   ],
 })
 export class AppModule {

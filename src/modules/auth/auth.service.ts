@@ -1,66 +1,90 @@
 import {
-  ConflictException,
+  BadRequestException,
   Injectable,
-  NotFoundException,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { SignInDTO } from './dto/signin.dto';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthRepository } from './auth.repository';
+import { compareSync } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDTO } from './dto/signup.dto';
+import { Role } from '../role/entities/role.entity';
+import { RoleType } from 'src/util/enum/roletype.enum';
+import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
-import { compare } from 'bcryptjs';
-import { IJwtPayload } from './jwt-payload.interface';
+import { SignUpDTO } from './dto/signup.dto';
+import { SignInDTO } from './dto/signin.dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(AuthRepository)
-    private readonly authRepository: AuthRepository,
+    private readonly userServices: UserService,
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
   async signup(signUpDTO: SignUpDTO) {
-    const { email } = signUpDTO;
-    const userExists = await this.authRepository.findOne({
-      where: { email: email },
-    });
-
-    if (userExists) {
-      throw new ConflictException('Email already exists');
-    }
-
-    return this.authRepository.signup(signUpDTO);
+    const role = (await this.roleRepository.findOneBy({ name: RoleType.USER }))
+      .id;
+    const user = await this.userServices.create({ ...signUpDTO, role });
+    return {
+      ...user,
+      token: this.getJwtToken({
+        email: user.email,
+        name: user.name,
+        lastName: user.lastName,
+      }),
+    };
   }
 
   async signin(signInDTO: SignInDTO) {
-    const { email, password } = signInDTO;
-    const user: User = await this.authRepository.findOne({
-      where: { email: email },
-    });
+    try {
+      const { email, password } = signInDTO;
 
-    if (!user) {
-      throw new NotFoundException('User does not exist');
+      const user = await this.userRepository.findOne({
+        where: { email },
+        select: {
+          id: true,
+          email: true,
+          password: true,
+        },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Email not valid');
+      }
+
+      if (!compareSync(password, user.password))
+        throw new UnauthorizedException('Password is wrong');
+
+      return {
+        ...user,
+        token: this.getJwtToken({
+          email: user.email,
+          name: user.name,
+          lastName: user.lastName,
+        }),
+      };
+    } catch (error) {
+      this.handleDBErrors(error);
     }
+  }
 
-    const isMatch = await compare(password, user.password);
+  private getJwtToken(payload: JwtPayload) {
+    return this.jwtService.sign(payload);
+  }
 
-    if (!isMatch) {
+  private handleDBErrors(error: any): never {
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+    if (error.message === 'Email not valid')
+      throw new UnauthorizedException('Email not valid');
+    if (error.message === 'Password is wrong')
       throw new UnauthorizedException('Password is wrong');
-    }
 
-    const payload: IJwtPayload = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      lastName: user.lastName,
-      dni: user.dni,
-      role: user.role,
-    };
+    console.log(error);
 
-    const token = await this.jwtService.sign(payload);
-
-    return { token };
+    throw new InternalServerErrorException('Check console logs');
   }
 }
