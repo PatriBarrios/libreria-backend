@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Subject } from './entities/subject.entity';
-import { CreateSubjectDto } from './dto/create-subject.dto';
-import { UpdateRoleDto } from '../role/dto/update-role.dto';
 import { PaginationDto } from '../../util/dto/pagination.dto';
+import { CreateSubjectDto } from './dto/create-subject.dto';
+import { UpdateSubjectDto } from './dto/update-subject.dto';
 
 @Injectable()
 export class SubjectService {
@@ -36,10 +36,10 @@ export class SubjectService {
     return subject;
   }
 
-  async update(id: number, updateRoleDto: UpdateRoleDto) {
+  async update(id: number, updateSubjectDto: UpdateSubjectDto) {
     const subject = await this.subjectRepository.preload({
       id,
-      ...updateRoleDto,
+      ...updateSubjectDto,
     });
 
     if (!subject) {

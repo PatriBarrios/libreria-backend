@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 
 import { Role } from './entities/role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { PaginationDto } from '../../util/dto/pagination.dto';
 
 @Injectable()
@@ -32,22 +31,6 @@ export class RoleService {
       throw new NotFoundException('Role not found');
     }
 
-    return role;
-  }
-
-  async update(id: number, updateRoleDto: UpdateRoleDto) {
-    const role = await this.roleRepository.preload({ id, ...updateRoleDto });
-
-    if (!role) {
-      throw new NotFoundException('Role not found');
-    }
-    await this.roleRepository.save(role);
-    return role;
-  }
-
-  async remove(id: number) {
-    const role = await this.findOne(id);
-    this.roleRepository.remove(role);
     return role;
   }
 }

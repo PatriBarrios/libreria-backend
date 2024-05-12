@@ -1,6 +1,7 @@
 import { Loan } from '../../loan/entities/loan.entity';
 import { Book } from '../../book/entities/book.entity';
 import {
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -21,6 +22,12 @@ export class BookCopy {
   })
   @JoinColumn({ name: 'book_id' })
   book: Book;
+
+  @Column({
+    nullable: false,
+    default: true,
+  })
+  available: boolean;
 
   @OneToMany(() => Loan, (loan) => loan.bookCopy, { cascade: true })
   loans: Loan[];

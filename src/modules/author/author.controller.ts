@@ -13,12 +13,15 @@ import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
 import { PaginationDto } from '../../util/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { RoleType } from 'src/util/enum/roletype.enum';
 
 @Controller('author')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
   @Post()
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   create(@Body() createAuthorDto: CreateAuthorDto) {
     return this.authorService.create(createAuthorDto);
   }
@@ -34,6 +37,7 @@ export class AuthorController {
   }
 
   @Patch(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAuthorDto: UpdateAuthorDto,
@@ -42,6 +46,7 @@ export class AuthorController {
   }
 
   @Delete(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.authorService.remove(id);
   }

@@ -6,9 +6,10 @@ import { LoanController } from './loan.controller';
 import { Loan } from './entities/loan.entity';
 import { BookCopy } from '../book_copy/entities/book_copy.entity';
 import { User } from '../user/entities/user.entity';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Loan, BookCopy, User])],
+  imports: [TypeOrmModule.forFeature([Loan, BookCopy, User]), AuthModule],
   controllers: [LoanController],
   providers: [LoanService],
 })

@@ -13,12 +13,15 @@ import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
 import { PaginationDto } from 'src/util/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { RoleType } from 'src/util/enum/roletype.enum';
 
 @Controller('loan')
 export class LoanController {
   constructor(private readonly loanService: LoanService) {}
 
   @Post()
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   create(@Body() createLoanDto: CreateLoanDto) {
     return this.loanService.create(createLoanDto);
   }
@@ -34,6 +37,7 @@ export class LoanController {
   }
 
   @Patch(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateLoanDto: UpdateLoanDto,
@@ -42,6 +46,7 @@ export class LoanController {
   }
 
   @Delete(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.loanService.remove(id);
   }

@@ -13,12 +13,15 @@ import { SubjectService } from './subject.service';
 import { CreateSubjectDto } from './dto/create-subject.dto';
 import { UpdateSubjectDto } from './dto/update-subject.dto';
 import { PaginationDto } from 'src/util/dto/pagination.dto';
+import { Auth } from '../auth/decorators/auth.decorator';
+import { RoleType } from 'src/util/enum/roletype.enum';
 
 @Controller('subject')
 export class SubjectController {
   constructor(private readonly subjectService: SubjectService) {}
 
   @Post()
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   create(@Body() createSubjectDto: CreateSubjectDto) {
     return this.subjectService.create(createSubjectDto);
   }
@@ -34,6 +37,7 @@ export class SubjectController {
   }
 
   @Patch(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSubjectDto: UpdateSubjectDto,
@@ -42,6 +46,7 @@ export class SubjectController {
   }
 
   @Delete(':id')
+  @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.subjectService.remove(id);
   }
