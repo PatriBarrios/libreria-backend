@@ -9,6 +9,7 @@ import { BookModule } from './modules/book/book.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BookCopyModule } from './modules/book_copy/book_copy.module';
 import { LoanModule } from './modules/loan/loan.module';
+import { SanctionModule } from './modules/sanction/sanction.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LoanModule } from './modules/loan/loan.module';
     AuthModule,
     BookCopyModule,
     LoanModule,
+    SanctionModule,
   ],
 })
 export class AppModule {

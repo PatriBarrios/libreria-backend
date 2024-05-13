@@ -14,8 +14,8 @@ export class AuthorService {
   ) {}
 
   async create(createAuthorDto: CreateAuthorDto) {
-    const role = this.authorRepository.create(createAuthorDto);
-    return this.authorRepository.save(role);
+    const author = this.authorRepository.create(createAuthorDto);
+    return this.authorRepository.save(author);
   }
 
   async findAll(paginationDto: PaginationDto) {

@@ -10,6 +10,7 @@ import {
 
 import { Loan } from '../../loan/entities/loan.entity';
 import { Role } from '../../role/entities/role.entity';
+import { Sanction } from '../../sanction/entities/sanction.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -42,4 +43,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Loan, (loan) => loan.user, { cascade: true })
   loans: Loan[];
+
+  @OneToMany(() => Sanction, (sanction) => sanction.user, {
+    cascade: true,
+  })
+  sanctions: Sanction[];
 }

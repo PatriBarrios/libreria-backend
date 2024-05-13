@@ -82,15 +82,6 @@ export class BookService {
     await queryRunner.startTransaction();
 
     try {
-      // if (authors) {
-      //   await queryRunner.manager.delete(BookAuthor, { book: id });
-      //   book.authors = await Promise.all(
-      //     authors.map(
-      //       async (author) =>
-      //         await this.authorRepository.findOneBy({ id: author }),
-      //     ),
-      //   );
-      // }
       await queryRunner.manager.save(book);
       await queryRunner.commitTransaction();
       await queryRunner.release();

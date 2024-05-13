@@ -20,12 +20,9 @@ export class AuthController {
     return this.authService.signin(signInDTO);
   }
 
-  @Get('private')
+  @Get('check-status')
   @Auth()
-  private(@GetUser() user: User) {
-    return {
-      message: 'TODO OK',
-      user,
-    };
+  checkAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
   }
 }
