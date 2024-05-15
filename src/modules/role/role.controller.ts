@@ -7,12 +7,14 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 
+@ApiTags('Role')
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}

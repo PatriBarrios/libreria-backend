@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { SanctionService } from './sanction.service';
 import { CreateSanctionDto } from './dto/create-sanction.dto';
 import { UpdateSanctionDto } from './dto/update-sanction.dto';
@@ -16,6 +17,7 @@ import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { PaginationDto } from 'src/util/dto/pagination.dto';
 
+@ApiTags('Sanction')
 @Controller('sanction')
 export class SanctionController {
   constructor(private readonly sanctionService: SanctionService) {}

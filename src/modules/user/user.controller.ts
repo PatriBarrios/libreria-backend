@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,6 +17,7 @@ import { PaginationDto } from '../../util/dto/pagination.dto';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

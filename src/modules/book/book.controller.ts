@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -16,6 +17,7 @@ import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 
+@ApiTags('Book')
 @Controller('book')
 export class BookController {
   constructor(private readonly bookService: BookService) {}

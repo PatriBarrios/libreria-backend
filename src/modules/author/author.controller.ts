@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthorService } from './author.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
@@ -16,6 +17,7 @@ import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 
+@ApiTags('Author')
 @Controller('author')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}

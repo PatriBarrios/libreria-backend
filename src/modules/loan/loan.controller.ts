@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { LoanService } from './loan.service';
 import { CreateLoanDto } from './dto/create-loan.dto';
 import { UpdateLoanDto } from './dto/update-loan.dto';
@@ -16,6 +17,7 @@ import { PaginationDto } from 'src/util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 
+@ApiTags('Loan')
 @Controller('loan')
 export class LoanController {
   constructor(private readonly loanService: LoanService) {}
