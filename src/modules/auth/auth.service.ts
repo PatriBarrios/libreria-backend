@@ -6,28 +6,25 @@ import {
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { compareSync } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { Role } from '../role/entities/role.entity';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { compareSync } from 'bcryptjs';
+
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
-import { SignUpDTO } from './dto/signup.dto';
-import { SignInDTO } from './dto/signin.dto';
-import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { SignUpDTO, SignInDTO } from './dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userServices: UserService,
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
   async signup(signUpDTO: SignUpDTO) {
-    const role = (await this.roleRepository.findOneBy({ name: RoleType.USER }))
-      .id;
+    const role = RoleType.USER;
     const user = await this.userServices.create({ ...signUpDTO, role });
     return {
       ...user,

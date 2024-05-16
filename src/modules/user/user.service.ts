@@ -7,24 +7,21 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { hashSync } from 'bcryptjs';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { PaginationDto } from '../../util/dto/pagination.dto';
-import { Role } from '../role/entities/role.entity';
-import { hashSync } from 'bcryptjs';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { role, email, password, ...userDetails } = createUserDto;
+      const { email, password, ...userDetails } = createUserDto;
       const userExists = await this.userRepository.findOneBy({ email });
 
       if (userExists) {
@@ -36,7 +33,6 @@ export class UserService {
       const user = this.userRepository.create({
         ...userDetails,
         email: email,
-        role: await this.roleRepository.findOneBy({ id: role }),
         password: hashSync(password, 10),
       });
 
@@ -68,14 +64,11 @@ export class UserService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
-      const { role, ...userDetails } = updateUserDto;
+      const { ...userDetails } = updateUserDto;
 
       const user = await this.userRepository.preload({
         id,
         ...userDetails,
-        role:
-          (await this.roleRepository.findOneBy({ id: role })) ||
-          (await this.findOne(id)).role,
       });
 
       if (!user) {
@@ -102,6 +95,6 @@ export class UserService {
 
     console.log(error);
 
-    throw new InternalServerErrorException('Chech console logs');
+    throw new InternalServerErrorException('Check console logs');
   }
 }

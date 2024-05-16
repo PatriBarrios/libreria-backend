@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
-import { RoleModule } from './modules/role/role.module';
 import { SubjectModule } from './modules/subject/subject.module';
 import { AuthorModule } from './modules/author/author.module';
 import { UserModule } from './modules/user/user.module';
@@ -15,7 +14,6 @@ import { SanctionModule } from './modules/sanction/sanction.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     DatabaseModule,
-    RoleModule,
     SubjectModule,
     AuthorModule,
     UserModule,
