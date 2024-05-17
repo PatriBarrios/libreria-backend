@@ -9,16 +9,25 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 
 import { SubjectService } from './subject.service';
-import { CreateSubjectDto } from './dto/create-subject.dto';
-import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { CreateSubjectDto, UpdateSubjectDto } from './dto';
 import { PaginationDto } from 'src/util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Subject } from './entities/subject.entity';
 
+@ApiBearerAuth()
 @ApiTags('Subject')
 @Controller('subject')
 export class SubjectController {
@@ -26,36 +35,37 @@ export class SubjectController {
 
   @Post()
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
-  @ApiResponse({
-    status: 200,
-    description: 'OK',
+  @ApiCreatedResponse({
+    description: 'Subject created',
     type: Subject,
   })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Token Related' })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   create(@Body() createSubjectDto: CreateSubjectDto) {
     return this.subjectService.create(createSubjectDto);
   }
 
   @Get()
+  @ApiOkResponse({ description: 'OK', type: [Subject] })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.subjectService.findAll(paginationDto);
   }
 
   @Get(':id')
-  @ApiResponse({
-    status: 201,
-    description: 'Subject was created',
-    type: Subject,
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Token Related' })
+  @ApiOkResponse({ description: 'OK', type: Subject })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.subjectService.findOne(id);
   }
 
   @Patch(':id')
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
+  @ApiOkResponse({ description: 'Subject updated', type: Subject })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSubjectDto: UpdateSubjectDto,
@@ -65,13 +75,10 @@ export class SubjectController {
 
   @Delete(':id')
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
-  @ApiResponse({
-    status: 200,
-    description: 'Subject was deleted',
-    type: Subject,
-  })
-  @ApiResponse({ status: 400, description: 'Bad Request' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Token Related' })
+  @ApiOkResponse({ description: 'Subject deleted', type: Subject })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.subjectService.remove(id);
   }

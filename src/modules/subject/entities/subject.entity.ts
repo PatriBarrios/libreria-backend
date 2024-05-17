@@ -15,6 +15,7 @@ export class Subject {
   @ApiProperty({
     example: 'Terror',
     description: 'Subject name',
+    maxLength: 100,
   })
   @Column({ name: 'subject_name', unique: true, length: 100 })
   name: string;

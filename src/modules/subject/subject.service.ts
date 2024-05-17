@@ -4,8 +4,7 @@ import { Repository } from 'typeorm';
 
 import { Subject } from './entities/subject.entity';
 import { PaginationDto } from '../../util/dto/pagination.dto';
-import { CreateSubjectDto } from './dto/create-subject.dto';
-import { UpdateSubjectDto } from './dto/update-subject.dto';
+import { CreateSubjectDto, UpdateSubjectDto } from './dto';
 
 @Injectable()
 export class SubjectService {

@@ -9,14 +9,24 @@ import {
   ParseIntPipe,
   Query,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { BookService } from './book.service';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateBookDto, UpdateBookDto } from './dto';
 import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
+import { Book } from './entities/book.entity';
 
+@ApiBearerAuth()
 @ApiTags('Book')
 @Controller('book')
 export class BookController {
@@ -24,22 +34,34 @@ export class BookController {
 
   @Post()
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
+  @ApiCreatedResponse({ description: 'Book created', type: Book })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   create(@Body() createBookDto: CreateBookDto) {
     return this.bookService.create(createBookDto);
   }
 
   @Get()
+  @ApiOkResponse({ description: 'OK', type: [Book] })
   findAll(@Query() paginationDto: PaginationDto) {
     return this.bookService.findAll(paginationDto);
   }
 
   @Get(':id')
+  @ApiOkResponse({ description: 'OK', type: Book })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.findOne(id);
   }
 
   @Patch(':id')
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
+  @ApiOkResponse({ description: 'Book updated', type: Book })
+  @ApiBadRequestResponse({ description: 'Bad Request' })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBookDto: UpdateBookDto,
@@ -49,6 +71,10 @@ export class BookController {
 
   @Delete(':id')
   @Auth(RoleType.ADMIN, RoleType.LIBRARIAN)
+  @ApiOkResponse({ description: 'Book deleted', type: Book })
+  @ApiUnauthorizedResponse({ description: 'Unauthorized' })
+  @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
+  @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.bookService.remove(id);
   }

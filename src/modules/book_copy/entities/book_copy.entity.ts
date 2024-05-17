@@ -8,12 +8,21 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 export class BookCopy {
+  @ApiProperty({
+    example: 4,
+    description: 'Book Copy ID',
+    uniqueItems: true,
+  })
   @PrimaryGeneratedColumn('increment')
   id: number;
 
+  @ApiProperty({
+    type: () => Book,
+  })
   @ManyToOne(() => Book, (book) => book.bookCopies, {
     onDelete: 'RESTRICT',
     onUpdate: 'CASCADE',
@@ -23,6 +32,10 @@ export class BookCopy {
   @JoinColumn({ name: 'book_id' })
   book: Book;
 
+  @ApiProperty({
+    default: true,
+    description: 'Is available?',
+  })
   @Column({
     nullable: false,
     default: true,

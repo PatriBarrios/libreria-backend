@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
+import { CreateBookDto, UpdateBookDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -85,7 +84,6 @@ export class BookService {
       await queryRunner.manager.save(book);
       await queryRunner.commitTransaction();
       await queryRunner.release();
-      // return await this.bookRepository.save(book);
       return this.findOne(id);
     } catch (error) {
       console.log(error);

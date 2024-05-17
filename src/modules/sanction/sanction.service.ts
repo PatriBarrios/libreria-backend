@@ -3,8 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateSanctionDto } from './dto/create-sanction.dto';
-import { UpdateSanctionDto } from './dto/update-sanction.dto';
+import { CreateSanctionDto, UpdateSanctionDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sanction } from './entities/sanction.entity';
 import { Repository } from 'typeorm';
