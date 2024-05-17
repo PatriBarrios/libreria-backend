@@ -73,4 +73,9 @@ export class User extends BaseEntity {
     cascade: true,
   })
   sanctions: Sanction[];
+
+  @Column({
+    default: false,
+  })
+  isDeleted: boolean;
 }

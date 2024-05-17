@@ -80,6 +80,6 @@ export class SubjectController {
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.subjectService.remove(id);
+    return this.subjectService.softDelete(id);
   }
 }

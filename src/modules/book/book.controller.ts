@@ -76,6 +76,6 @@ export class BookController {
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.bookService.remove(id);
+    return this.bookService.softDelete(id);
   }
 }

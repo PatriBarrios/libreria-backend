@@ -15,42 +15,49 @@ export class SubjectService {
 
   async create(createSubjectDto: CreateSubjectDto) {
     const subject = this.subjectRepository.create(createSubjectDto);
-    return this.subjectRepository.save(subject);
+    await this.subjectRepository.save(subject);
+    delete subject.isDeleted;
+    return subject;
   }
 
   async findAll(paginationDto: PaginationDto) {
-    return await this.subjectRepository.find({
+    const subjects = await this.subjectRepository.find({
+      where: { isDeleted: false },
       take: paginationDto.limit || 10,
       skip: paginationDto.offset || 0,
     });
+    subjects.map((item) => delete item.isDeleted);
+    return subjects;
   }
 
   async findOne(id: number) {
-    const subject = await this.subjectRepository.findOneBy({ id: id });
+    const subject = await this.subjectRepository.findOne({
+      where: { id, isDeleted: false },
+    });
 
     if (!subject) {
       throw new NotFoundException('Subject not found');
     }
 
+    delete subject.isDeleted;
     return subject;
   }
 
   async update(id: number, updateSubjectDto: UpdateSubjectDto) {
+    await this.findOne(id);
     const subject = await this.subjectRepository.preload({
       id,
       ...updateSubjectDto,
     });
 
-    if (!subject) {
-      throw new NotFoundException('Subject not found');
-    }
     await this.subjectRepository.save(subject);
+    delete subject.isDeleted;
     return subject;
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     const subject = await this.findOne(id);
-    this.subjectRepository.remove(subject);
+    this.subjectRepository.update(id, { isDeleted: true });
     return subject;
   }
 }

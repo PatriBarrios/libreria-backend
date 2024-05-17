@@ -32,6 +32,8 @@ export class BookService {
         ),
       });
       await this.bookRepository.save(book);
+
+      delete book.isDeleted;
       return book;
     } catch (error) {
       console.log(error);
@@ -39,19 +41,26 @@ export class BookService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    return await this.bookRepository.find({
+    const books = await this.bookRepository.find({
+      where: { isDeleted: false },
       take: paginationDto.limit || 10,
       skip: paginationDto.offset || 0,
     });
+    books.map((item) => delete item.isDeleted);
+    return books;
   }
 
   async findOne(id: number) {
     try {
-      const book = await this.bookRepository.findOneBy({ id });
+      const book = await this.bookRepository.findOne({
+        where: { id, isDeleted: false },
+      });
       if (!book) {
         throw new NotFoundException('Book not found');
       }
       await this.bookRepository.save(book);
+
+      delete book.isDeleted;
       return book;
     } catch (error) {
       console.log(error);
@@ -59,23 +68,25 @@ export class BookService {
   }
 
   async update(id: number, updateBookDto: UpdateBookDto) {
+    const thisBook = await this.findOne(id);
     const { subject, authors, ...bookDetails } = updateBookDto;
     const book = await this.bookRepository.preload({
       id,
       ...bookDetails,
       subject:
-        (await this.subjectRepository.findOneBy({ id: subject })) ||
-        (await this.findOne(id)).subject,
+        (await this.subjectRepository.findOne({
+          where: { id: subject, isDeleted: false },
+        })) || thisBook.subject,
       authors: await Promise.all(
         authors.map(
           async (author) =>
-            await this.authorRepository.findOneBy({ id: author }),
-        ) || (await this.bookRepository.findOneBy({ id })).authors,
+            await this.authorRepository.findOne({
+              where: { id: author, isDeleted: false },
+            }),
+        ) || thisBook.authors,
       ),
     });
-    if (!book) {
-      throw new NotFoundException('Book not found');
-    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -90,9 +101,9 @@ export class BookService {
     }
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     const book = await this.findOne(id);
-    this.bookRepository.remove(book);
+    this.bookRepository.update(id, { isDeleted: true });
     return book;
   }
 }

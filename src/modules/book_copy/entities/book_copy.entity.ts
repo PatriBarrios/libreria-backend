@@ -44,4 +44,9 @@ export class BookCopy {
 
   @OneToMany(() => Loan, (loan) => loan.bookCopy, { cascade: true })
   loans: Loan[];
+
+  @Column({
+    default: false,
+  })
+  isDeleted: boolean;
 }

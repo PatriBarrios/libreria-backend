@@ -77,6 +77,6 @@ export class BookCopyController {
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.bookCopyService.remove(id);
+    return this.bookCopyService.softDelete(id);
   }
 }

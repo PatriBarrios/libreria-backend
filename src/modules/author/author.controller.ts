@@ -77,6 +77,6 @@ export class AuthorController {
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.authorService.remove(id);
+    return this.authorService.softDelete(id);
   }
 }

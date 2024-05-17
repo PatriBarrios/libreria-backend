@@ -28,7 +28,9 @@ export class LoanService {
     if (endDate <= startDate)
       throw new BadRequestException('End date must be after start date');
 
-    const tBookCopy = await this.bookCopyRepository.findOneBy({ id: bookCopy });
+    const tBookCopy = await this.bookCopyRepository.findOne({
+      where: { id: bookCopy, isDeleted: false },
+    });
     if (!tBookCopy) throw new NotFoundException('Book copy not found');
     if (!tBookCopy.available)
       throw new BadRequestException('Book copy is not available');
@@ -38,7 +40,9 @@ export class LoanService {
       startDate,
       endDate,
       bookCopy: tBookCopy,
-      user: await this.userRepository.findOneBy({ id: user }),
+      user: await this.userRepository.findOne({
+        where: { id: user, isDeleted: false },
+      }),
     });
 
     if (!loan.user) throw new NotFoundException('User not found');
@@ -82,12 +86,17 @@ export class LoanService {
     let newEndDate: Date;
 
     if (bookCopy) {
-      newBookCopy = await this.bookCopyRepository.findOneBy({
-        id: bookCopy,
+      newBookCopy = await this.bookCopyRepository.findOne({
+        where: {
+          id: bookCopy,
+          isDeleted: false,
+        },
       });
     }
     if (user) {
-      newUser = await this.userRepository.findOneBy({ id: user });
+      newUser = await this.userRepository.findOne({
+        where: { id: user, isDeleted: false },
+      });
     }
 
     if (bookCopy && !newBookCopy)
@@ -105,13 +114,14 @@ export class LoanService {
     if (newEndDate <= newStartDate)
       throw new BadRequestException('End date must be after start date');
 
+    const thisLoan = await this.findOne(id);
     const loan = await this.loanRepository.preload({
       id,
       ...loanDetails,
       startDate: newStartDate,
       endDate: newEndDate,
-      bookCopy: newBookCopy || (await this.findOne(id)).bookCopy,
-      user: newUser || (await this.findOne(id)).user,
+      bookCopy: newBookCopy || thisLoan.bookCopy,
+      user: newUser || thisLoan.user,
     });
 
     await this.loanRepository.save(loan);

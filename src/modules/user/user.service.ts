@@ -38,6 +38,7 @@ export class UserService {
 
       await this.userRepository.save(user);
       delete user.password;
+      delete user.isDeleted;
 
       return user;
     } catch (error) {
@@ -46,24 +47,30 @@ export class UserService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-    return await this.userRepository.find({
+    const users = await this.userRepository.find({
+      where: { isDeleted: false },
       take: paginationDto.limit || 10,
       skip: paginationDto.offset || 0,
     });
+    users.map((item) => delete item.isDeleted);
+    return users;
   }
 
   async findOne(id: number) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id, isDeleted: false },
+    });
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
-
+    delete user.isDeleted;
     return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
+      await this.findOne(id);
       const { ...userDetails } = updateUserDto;
 
       const user = await this.userRepository.preload({
@@ -71,20 +78,17 @@ export class UserService {
         ...userDetails,
       });
 
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-
       await this.userRepository.save(user);
+      delete user.isDeleted;
       return user;
     } catch (error) {
       console.log(error);
     }
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     const user = await this.findOne(id);
-    await this.userRepository.remove(user);
+    await this.userRepository.update(id, { isDeleted: true });
     return user;
   }
 

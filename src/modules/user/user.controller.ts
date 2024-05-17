@@ -250,6 +250,6 @@ export class UserController {
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
   @ApiNotFoundResponse({ description: 'Not Found' })
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.userService.remove(id);
+    return this.userService.softDelete(id);
   }
 }

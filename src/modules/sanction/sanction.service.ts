@@ -21,7 +21,9 @@ export class SanctionService {
   async create(createSanctionDto: CreateSanctionDto) {
     try {
       const { user, ...sanctionDetails } = createSanctionDto;
-      const userS = await this.userRepository.findOneBy({ id: user });
+      const userS = await this.userRepository.findOne({
+        where: { id: user, isDeleted: false },
+      });
 
       if (!userS) throw new NotFoundException('User not found');
 
@@ -63,7 +65,10 @@ export class SanctionService {
 
       let newUser: User;
 
-      if (user) newUser = await this.userRepository.findOneBy({ id: user });
+      if (user)
+        newUser = await this.userRepository.findOne({
+          where: { id: user, isDeleted: false },
+        });
 
       if (user && !newUser) throw new NotFoundException('User not found');
 

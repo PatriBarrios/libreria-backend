@@ -33,4 +33,9 @@ export class Author {
     onUpdate: 'CASCADE',
   })
   books: Book[];
+
+  @Column({
+    default: false,
+  })
+  isDeleted: boolean;
 }

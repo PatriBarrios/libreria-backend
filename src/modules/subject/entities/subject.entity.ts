@@ -22,4 +22,9 @@ export class Subject {
 
   @OneToMany(() => Book, (book) => book.subject, { cascade: true })
   books: Book[];
+
+  @Column({
+    default: false,
+  })
+  isDeleted: boolean;
 }

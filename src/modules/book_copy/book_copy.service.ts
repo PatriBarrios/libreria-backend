@@ -20,45 +20,55 @@ export class BookCopyService {
     const bookCopy = this.bookCopyRepository.create({
       book: await this.bookRepository.findOneBy({ id: book }),
     });
-    return this.bookCopyRepository.save(bookCopy);
+    await this.bookCopyRepository.save(bookCopy);
+
+    delete bookCopy.isDeleted;
+    return bookCopy;
   }
 
   async findAll(paginationDto: PaginationDto) {
-    return await this.bookCopyRepository.find({
+    const bookCopies = await this.bookCopyRepository.find({
+      where: { isDeleted: false },
       take: paginationDto.limit || 10,
       skip: paginationDto.offset || 0,
     });
+    bookCopies.map((item) => delete item.isDeleted);
+    return bookCopies;
   }
 
   async findOne(id: number) {
-    const bookCopy = await this.bookCopyRepository.findOneBy({ id });
+    const bookCopy = await this.bookCopyRepository.findOne({
+      where: { id, isDeleted: false },
+    });
 
     if (!bookCopy) {
       throw new NotFoundException('Book copy not found');
     }
 
+    delete bookCopy.isDeleted;
     return bookCopy;
   }
 
   async update(id: number, updateBookCopyDto: UpdateBookCopyDto) {
+    const thisBookCopy = await this.findOne(id);
     const { book } = updateBookCopyDto;
     const bookCopy = await this.bookCopyRepository.preload({
       id,
       book:
-        (await this.bookRepository.findOneBy({ id: book })) ||
-        (await this.findOne(id)).book,
+        (await this.bookRepository.findOne({
+          where: { id: book, isDeleted: false },
+        })) || thisBookCopy.book,
     });
 
-    if (!bookCopy) {
-      throw new NotFoundException('User not found');
-    }
     await this.bookCopyRepository.save(bookCopy);
+
+    delete bookCopy.isDeleted;
     return bookCopy;
   }
 
-  async remove(id: number) {
+  async softDelete(id: number) {
     const bookCopy = await this.findOne(id);
-    this.bookCopyRepository.remove(bookCopy);
+    this.bookCopyRepository.update(id, { isDeleted: true });
     return bookCopy;
   }
 }

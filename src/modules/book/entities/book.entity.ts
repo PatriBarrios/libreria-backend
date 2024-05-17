@@ -99,4 +99,9 @@ export class Book {
 
   @OneToMany(() => BookCopy, (bookCopy) => bookCopy.book, { cascade: true })
   bookCopies: BookCopy[];
+
+  @Column({
+    default: false,
+  })
+  isDeleted: boolean;
 }
