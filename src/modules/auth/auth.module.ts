@@ -10,11 +10,13 @@ import { User } from '../user/entities/user.entity';
 import { Configuration } from 'src/util/enum/configuration.enum';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UserService } from '../user/user.service';
+import { MailModule } from '../../mail/mail.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     ConfigModule,
+    MailModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
