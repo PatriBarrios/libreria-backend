@@ -15,8 +15,8 @@ import { MailModule } from '../../mail/mail.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    ConfigModule,
     MailModule,
+    ConfigModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

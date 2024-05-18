@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Configuration } from 'src/util/enum/configuration.enum';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,7 +19,14 @@ import { Configuration } from 'src/util/enum/configuration.enum';
           },
         },
         defaults: {
-          from: `"No Reply" <${config.get(Configuration.MAIL_FROM)}>`,
+          from: `"Library" <${config.get(Configuration.MAIL_FROM)}>`,
+        },
+        template: {
+          dir: join(__dirname, 'templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
         },
       }),
       inject: [ConfigService],

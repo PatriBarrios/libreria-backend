@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Our Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+      .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+            color: #666;
+        }
+        footer {
+            text-align: center;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome {{name}}</h1>
+        <p>We're thrilled to have you join our community. We hope you'll find everything you need among our books to enjoy.</p>
+        <p>To get started, simply visit our main page and select the book that interests you. It's that easy!</p>
+        <p>If you have any questions or need assistance, we're here for you. Don't hesitate to reach out to us.</p>
+        <footer>
+            <p>With warm regards,</p>
+            <p>The Team at {{libraryName}}</p>
+        </footer>
+    </div>
+</body>
+</html>

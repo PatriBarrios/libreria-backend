@@ -5,15 +5,16 @@ import { MailerService } from '@nestjs-modules/mailer';
 export class MailService {
   constructor(private mailerService: MailerService) {}
 
-  async sendEmail(email: string, name: string) {
+  async sendWelcomeEmail(email: string, name: string) {
     try {
       await this.mailerService.sendMail({
         to: email,
         subject: 'Welcome to Library',
-        text: `Hola ${name}`,
-        html: `
-        <h3>A dormir tanke que ya esta talla pincha :)</h3>
-      `,
+        template: './welcome.hbs',
+        context: {
+          name,
+          libraryName: 'Web Library',
+        },
       });
     } catch (error) {
       console.log(error);

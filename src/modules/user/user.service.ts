@@ -12,16 +12,18 @@ import { hashSync } from 'bcryptjs';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { PaginationDto } from '../../util/dto/pagination.dto';
+import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const { email, password, ...userDetails } = createUserDto;
+      const { email, password, name, ...userDetails } = createUserDto;
       const userExists = await this.userRepository.findOneBy({ email });
 
       if (userExists) {
@@ -29,10 +31,11 @@ export class UserService {
           message: 'Email already exists',
         });
       }
-
+      await this.mailService.sendWelcomeEmail(email, name);
       const user = this.userRepository.create({
         ...userDetails,
-        email: email,
+        email,
+        name,
         password: hashSync(password, 10),
       });
 

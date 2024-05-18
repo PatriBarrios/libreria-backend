@@ -14,13 +14,11 @@ import { RoleType } from 'src/util/enum/roletype.enum';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { SignUpDTO, SignInDTO } from './dto';
-import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userServices: UserService,
-    private readonly mailService: MailService,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
@@ -28,7 +26,6 @@ export class AuthService {
   async signup(signUpDTO: SignUpDTO) {
     const role = RoleType.USER;
     const user = await this.userServices.create({ ...signUpDTO, role });
-    await this.mailService.sendEmail(user.email, user.name);
     return {
       ...user,
       token: this.getJwtToken({
