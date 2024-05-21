@@ -22,9 +22,9 @@ import {
 
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto, UpdateSubjectDto } from './dto';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
+import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
-import { RoleType } from 'src/util/enum/roletype.enum';
+import { RoleType } from '../../util/enum/roletype.enum';
 import { Subject } from './entities/subject.entity';
 
 @ApiBearerAuth()
