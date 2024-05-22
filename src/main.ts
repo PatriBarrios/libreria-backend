@@ -17,6 +17,12 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle('Library API')
     .setDescription('Library endpoints')
