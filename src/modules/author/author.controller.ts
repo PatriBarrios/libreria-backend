@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +21,6 @@ import {
 
 import { AuthorService } from './author.service';
 import { CreateAuthorDto, UpdateAuthorDto } from './dto';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Author } from './entities/author.entity';
@@ -45,8 +43,8 @@ export class AuthorController {
 
   @Get()
   @ApiOkResponse({ description: 'OK', type: [Author] })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.authorService.findAll(paginationDto);
+  findAll() {
+    return this.authorService.findAll();
   }
 
   @Get(':id')

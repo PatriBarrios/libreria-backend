@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +21,6 @@ import {
 
 import { SubjectService } from './subject.service';
 import { CreateSubjectDto, UpdateSubjectDto } from './dto';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from '../../util/enum/roletype.enum';
 import { Subject } from './entities/subject.entity';
@@ -48,8 +46,8 @@ export class SubjectController {
 
   @Get()
   @ApiOkResponse({ description: 'OK', type: [Subject] })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.subjectService.findAll(paginationDto);
+  findAll() {
+    return this.subjectService.findAll();
   }
 
   @Get(':id')

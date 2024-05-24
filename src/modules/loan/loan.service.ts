@@ -9,7 +9,6 @@ import { Loan } from './entities/loan.entity';
 import { Repository } from 'typeorm';
 import { BookCopy } from '../book_copy/entities/book_copy.entity';
 import { User } from '../user/entities/user.entity';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
 
 @Injectable()
 export class LoanService {
@@ -59,11 +58,8 @@ export class LoanService {
     return loan;
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    return await this.loanRepository.find({
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
-    });
+  async findAll() {
+    return await this.loanRepository.find();
   }
 
   async findOne(id: number) {

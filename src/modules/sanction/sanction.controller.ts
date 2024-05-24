@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -24,7 +23,6 @@ import { SanctionService } from './sanction.service';
 import { CreateSanctionDto, UpdateSanctionDto } from './dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
 import { Sanction } from './entities/sanction.entity';
 
 @ApiBearerAuth()
@@ -48,8 +46,8 @@ export class SanctionController {
   @ApiOkResponse({ description: 'OK', type: [Sanction] })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.sanctionService.findAll(paginationDto);
+  findAll() {
+    return this.sanctionService.findAll();
   }
 
   @Get(':id')

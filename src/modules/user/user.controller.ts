@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +21,6 @@ import {
 
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { User } from './entities/user.entity';
@@ -133,8 +131,8 @@ export class UserController {
   })
   @ApiUnauthorizedResponse({ description: 'Unauthorized' })
   @ApiForbiddenResponse({ description: 'Forbidden - Token Related' })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.userService.findAll(paginationDto);
+  findAll() {
+    return this.userService.findAll();
   }
 
   @Get(':id')

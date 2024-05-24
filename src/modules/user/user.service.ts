@@ -11,7 +11,6 @@ import { hashSync } from 'bcryptjs';
 
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { MailService } from '../../mail/mail.service';
 
 @Injectable()
@@ -53,11 +52,9 @@ export class UserService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll() {
     const users = await this.userRepository.find({
       where: { isDeleted: false },
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
     });
     users.map((item) => delete item.isDeleted);
     return users;

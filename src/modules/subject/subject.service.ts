@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Subject } from './entities/subject.entity';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { CreateSubjectDto, UpdateSubjectDto } from './dto';
 
 @Injectable()
@@ -20,11 +19,9 @@ export class SubjectService {
     return subject;
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll() {
     const subjects = await this.subjectRepository.find({
       where: { isDeleted: false },
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
     });
     subjects.map((item) => delete item.isDeleted);
     return subjects;

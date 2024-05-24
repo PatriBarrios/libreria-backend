@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sanction } from './entities/sanction.entity';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
 
 @Injectable()
 export class SanctionService {
@@ -39,11 +38,8 @@ export class SanctionService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
-    return await this.sanctionRepository.find({
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
-    });
+  async findAll() {
+    return await this.sanctionRepository.find();
   }
 
   async findOne(id: number) {

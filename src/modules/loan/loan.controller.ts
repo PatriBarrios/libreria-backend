@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,7 +21,6 @@ import {
 
 import { LoanService } from './loan.service';
 import { CreateLoanDto, UpdateLoanDto } from './dto';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Loan } from './entities/loan.entity';
@@ -45,8 +43,8 @@ export class LoanController {
 
   @Get()
   @ApiOkResponse({ description: 'OK', type: [Loan] })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.loanService.findAll(paginationDto);
+  findAll() {
+    return this.loanService.findAll();
   }
 
   @Get(':id')

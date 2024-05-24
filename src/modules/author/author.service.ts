@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 
 import { CreateAuthorDto, UpdateAuthorDto } from './dto';
 import { Author } from './entities/author.entity';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 
 @Injectable()
 export class AuthorService {
@@ -20,11 +19,9 @@ export class AuthorService {
     return author;
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll() {
     const authors = await this.authorRepository.find({
       where: { isDeleted: false },
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
     });
     authors.map((item) => delete item.isDeleted);
     return authors;

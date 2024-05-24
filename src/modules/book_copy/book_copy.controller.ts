@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   Delete,
-  Query,
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
@@ -22,7 +21,6 @@ import {
 
 import { BookCopyService } from './book_copy.service';
 import { CreateBookCopyDto, UpdateBookCopyDto } from './dto';
-import { PaginationDto } from 'src/util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from '../../util/enum/roletype.enum';
 import { BookCopy } from './entities/book_copy.entity';
@@ -45,8 +43,8 @@ export class BookCopyController {
 
   @Get()
   @ApiOkResponse({ description: 'OK', type: [BookCopy] })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.bookCopyService.findAll(paginationDto);
+  findAll() {
+    return this.bookCopyService.findAll();
   }
 
   @Get(':id')

@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Query,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -21,7 +20,6 @@ import {
 } from '@nestjs/swagger';
 import { BookService } from './book.service';
 import { CreateBookDto, UpdateBookDto } from './dto';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Auth } from '../auth/decorators/auth.decorator';
 import { RoleType } from 'src/util/enum/roletype.enum';
 import { Book } from './entities/book.entity';
@@ -44,8 +42,8 @@ export class BookController {
 
   @Get()
   @ApiOkResponse({ description: 'OK', type: [Book] })
-  findAll(@Query() paginationDto: PaginationDto) {
-    return this.bookService.findAll(paginationDto);
+  findAll() {
+    return this.bookService.findAll();
   }
 
   @Get(':id')

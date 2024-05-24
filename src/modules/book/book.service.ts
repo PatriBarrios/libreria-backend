@@ -3,7 +3,6 @@ import { CreateBookDto, UpdateBookDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { DataSource, Repository } from 'typeorm';
-import { PaginationDto } from '../../util/dto/pagination.dto';
 import { Subject } from '../subject/entities/subject.entity';
 import { Author } from '../author/entities/author.entity';
 
@@ -40,11 +39,9 @@ export class BookService {
     }
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll() {
     const books = await this.bookRepository.find({
       where: { isDeleted: false },
-      take: paginationDto.limit || 10,
-      skip: paginationDto.offset || 0,
     });
     books.map((item) => delete item.isDeleted);
     return books;
