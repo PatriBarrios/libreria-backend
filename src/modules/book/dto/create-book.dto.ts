@@ -5,8 +5,10 @@ import {
   IsNotEmpty,
   IsPositive,
   IsString,
+  Max,
   MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreateBookDto {
@@ -27,6 +29,7 @@ export class CreateBookDto {
   @IsInt()
   @IsNotEmpty()
   @Min(1900)
+  @Max(2024)
   yearEdition: number;
 
   @ApiProperty({
@@ -82,6 +85,7 @@ export class CreateBookDto {
   })
   @IsNotEmpty()
   @IsArray()
+  @MinLength(1)
   @IsInt({ each: true })
   @IsPositive({ each: true })
   authors: number[];
