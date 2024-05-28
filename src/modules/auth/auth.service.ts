@@ -50,7 +50,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new UnauthorizedException('Email not valid');
+        throw new UnauthorizedException('Email not found');
       }
 
       if (!compareSync(password, user.password))
@@ -86,8 +86,8 @@ export class AuthService {
 
   private handleDBErrors(error: any): never {
     if (error.code === '23505') throw new BadRequestException(error.detail);
-    if (error.message === 'Email not valid')
-      throw new UnauthorizedException('Email not valid');
+    if (error.message === 'Email not found')
+      throw new UnauthorizedException('Email not found');
     if (error.message === 'Password is wrong')
       throw new UnauthorizedException('Password is wrong');
 
