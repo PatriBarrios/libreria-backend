@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsBoolean,
   IsDate,
   IsInt,
   IsNotEmpty,
@@ -46,4 +47,11 @@ export class CreateSanctionDto {
   @IsInt()
   @IsPositive()
   user: number;
+
+  @ApiPropertyOptional({
+    default: true,
+  })
+  @IsOptional()
+  @IsBoolean()
+  isActive: boolean;
 }
