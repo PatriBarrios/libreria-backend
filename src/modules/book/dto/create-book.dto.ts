@@ -8,7 +8,7 @@ import {
   Max,
   MaxLength,
   Min,
-  MinLength,
+  ArrayNotEmpty,
 } from 'class-validator';
 
 export class CreateBookDto {
@@ -85,7 +85,7 @@ export class CreateBookDto {
   })
   @IsNotEmpty()
   @IsArray()
-  @MinLength(1)
+  @ArrayNotEmpty()
   @IsInt({ each: true })
   @IsPositive({ each: true })
   authors: number[];

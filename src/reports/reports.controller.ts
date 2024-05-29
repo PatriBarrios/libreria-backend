@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Res,
+  Header,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,6 +42,7 @@ export class ReportsController {
 
   @Auth(RoleType.ADMIN)
   @Get('books-by-author/:id')
+  @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   async booksByAuthor(
     @Res() res: Response,
     @Param('id', ParseIntPipe) id: number,
@@ -136,6 +138,7 @@ export class ReportsController {
 
   @Auth(RoleType.ADMIN)
   @Get('books-by-subject/:id')
+  @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   async booksBySubject(
     @Res() res: Response,
     @Param('id', ParseIntPipe) id: number,
@@ -230,6 +233,7 @@ export class ReportsController {
 
   @Auth(RoleType.ADMIN)
   @Get('loans-by-user/:id')
+  @Header('Access-Control-Expose-Headers', 'Content-Disposition')
   async loansByUser(
     @Res() res: Response,
     @Param('id', ParseIntPipe) id: number,
